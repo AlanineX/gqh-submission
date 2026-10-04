@@ -20,7 +20,8 @@ The organizer starter asks for a clean-kernel notebook with explicit start/end i
 | Point-in-time universe | Limitation disclosed | The current large-cap list is static, not historical membership, so survivorship bias may affect 2022–2024 estimates. |
 | Dependencies and credentials | Prepared | `requirements.txt` pins QuantLib; `.env` and `.massive_cache/` are ignored. IV parquet and private evaluation artifacts are excluded from the public allowlist. |
 | Portable content scan | Pending final check | Notebook metadata and outputs were cleared. Run the final source-only scan for local paths, account identifiers, and unrelated platform terms before publication. |
-| Public repository and Devpost entry | Pending | No public repo push or competition submission has been made. |
+| Public repository | Complete | `https://github.com/AlanineX/data-is-all-you-need` is public; the clean submission package is pushed to `main`. |
+| Devpost entry | Pending | Attach the two-page PDF and public repository URL before the deadline. |
 
 ## Saved result context
 
