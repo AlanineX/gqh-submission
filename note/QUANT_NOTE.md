@@ -14,7 +14,7 @@ The strategy tests whether a company’s call-versus-put implied-volatility skew
 
 **How IV180 is built.** Each company-session uses the last completed five-minute stock bar at 15:55 ET for spot. The pipeline selects a standard listed expiry nearest 180 calendar days (within 150–210 days), then the strike nearest spot that has both a call and a put. It takes a valid bid/ask midpoint for each option from a quote no more than 60 seconds old, observed during the preceding five minutes. A QuantLib American-option model solves for implied volatility using the prior Treasury yield and trailing paid cash dividends as carry. “180-day IV” is therefore a maturity target, not a promise that every contract expires on exactly day 180.
 
-Implied volatility is the volatility input that makes a pricing model match an observed option price. It reflects the option market’s priced uncertainty; it is not a direct record of positions or a guarantee of future volatility. For company $i$ and date $t$, define call-minus-put skew as $k_{i,t}=\sigma^{C}_{i,t}-\sigma^{P}_{i,t}$. The signal subtracts the company’s trailing 60-session average, using only earlier sessions, then standardizes that residual across companies on the same day. High-skew observations use $z>0.43$; this is a nominal upper-third cutoff under a normal reference, not a guaranteed empirical tercile.
+Implied volatility is the volatility input that makes a pricing model match an observed option price. It reflects the option market’s priced uncertainty; it is not a direct record of positions or a guarantee of future volatility. For company $i$ and date $t$, define call-minus-put skew as $k_{i,t}=\sigma^{C}_{i,t}-\sigma^{P}_{i,t}$. The signal subtracts the company’s trailing 60-session average, using only earlier sessions (at least 30 valid observations), then standardizes that residual across companies on the same day. High-skew observations use $z>0.43$; this is a nominal upper-third cutoff under a normal reference, not a guaranteed empirical tercile.
 
 ![IV180 data construction and event-study flow. The predictor uses matched call and put IV quotes; daily option bars are used later to mark modeled trade outcomes.](figs/iv180_construction.png)
 
@@ -22,20 +22,18 @@ The filing date maps to the first trading session strictly after the filing date
 
 ## 3. Results
 
-The in-sample filing and signal dates run from March 7, 2022 through December 31, 2024. In preliminary saved development outputs, high-skew Item 7.01 protective-put trades average 0.72% of entry spot at 10 sessions and 1.15% at 21 sessions. Matched high-skew placebo trades average 0.37% and 0.75%; the event-minus-placebo gaps are 0.35 and 0.40 percentage points, with t-statistics 0.62 and 0.44. The positive differences are too uncertain to establish a reliable 8-K improvement. These saved values predate the newly added requested-end-date guard and must be refreshed before final performance claims.
+The in-sample filing and signal dates run from March 7, 2022 through December 31, 2024; exit marks are capped at the same end date. In the reproduced outputs, high-skew Item 7.01 protective-put trades average 0.73% of entry spot at 10 sessions and 1.25% at 21 sessions. Matched high-skew placebo means are 0.34% and 0.69%. The event-minus-placebo gaps are 0.39 and 0.56 percentage points, with t-statistics 0.67 and 0.61. These positive differences remain too uncertain to establish a reliable 8-K improvement.
 
-| Portfolio statistic | Saved in-sample value |
+| Monthly cohort statistic | Reproduced in-sample value |
 |---|---:|
-| Annualized Sharpe, 33 monthly cohorts | 0.45 |
-| Summed cohort P&L | +11.6% |
-| Maximum drawdown | 6.54% |
+| Annualized Sharpe, 33 monthly cohorts | 0.42 |
+| Summed cohort P&L | +10.85% |
+| Maximum cohort-index drawdown | 6.54% |
 | Positive cohorts | 42% |
 
-The risk reversal beats some weaker standard structures in the saved comparison but does not beat the protective put. The protective-put event-minus-placebo gap also changes sign across the three development years, so a positive pooled mean does not establish persistence. No organizer evaluation results are included here; the sealed evaluation is reserved.
+At 21 sessions, risk reversal averages 0.93% of entry spot versus 0.74% for covered calls, 0.62% for long calls, 0.20% for cash-secured puts, and 0.18% for collars. The protective put remains highest at 1.25%. The protective-put event-minus-placebo gap is still negative in 2024. Trade P&L is scaled by entry spot; Sharpe is calculated separately from monthly cohort means, not a self-financing live account. No evaluation results are included.
 
-At 21 sessions, the risk reversal averages 0.81% of entry spot versus 0.69% for covered calls, 0.49% for long calls, 0.17% for cash-secured puts, and 0.14% for collars. The protective put remains highest at 1.15%. Trade-level P&L is scaled by entry spot; the Sharpe above is calculated separately from monthly cohort returns.
-
-![Net modeled P&L for high-skew Item 7.01 events versus matched high-skew placebo sessions, plus the protective-put event-minus-placebo gap by development year. Returns are percentages of entry spot; t-statistics show the positive pooled gaps are uncertain.](figs/event_vs_placebo.png)
+![Net modeled P&L for high-skew Item 7.01 events versus matched high-skew placebo sessions, plus the protective-put event-minus-placebo gap by development year. Returns are percentages of entry spot; the positive pooled gaps have low t-statistics.](figs/event_vs_placebo.png)
 
 ## 4. Risks and failure conditions
 
@@ -43,4 +41,4 @@ The 33-cohort sample is small, and the signal uses a static large-cap universe r
 
 ## 5. Trade specification and reproduction
 
-Use the high-skew Item 7.01 bucket, enter on the first session after the filing date, buy 100 shares and one 3–6 month put approximately 5% below spot, and exit after 10 sessions. Costs are 2% of option premium per leg per side and 3 basis points per stock side. The default filing/signal window is March 7, 2022–December 31, 2024. Run `strategy.ipynb` from a clean Python kernel after installing `requirements.txt` and setting `MASSIVE_API_KEY`. It shows event and placebo construction, IV180 construction, the five standard structures, bonus comparisons, cost/OTM/horizon results, and portfolio summaries. The organizer also requests expiry, entry-timing, and filing-category sensitivity; those additional comparisons remain pending and are marked in `SUBMISSION_CHECKLIST.md`.
+Use the high-skew Item 7.01 bucket, enter on the first session after the filing date, buy 100 shares and one 3–6 month put approximately 5% below spot, and exit after 10 sessions. Costs are 2% of option premium per leg per side and 3 basis points per stock side. The default filing/signal window is March 7, 2022–December 31, 2024. Run `strategy.ipynb` from a clean Python kernel after installing `requirements.txt` and setting `MASSIVE_API_KEY`. It shows event and placebo construction, IV180 construction, the five standard structures, bonus comparisons, cost/OTM/horizon results, and portfolio summaries. The full in-sample notebook was reproduced with the pinned dependencies, the original IV180 input panel, and date-bounded option data. The missing-panel API builder was also checked on an in-sample day and matched both IVs to six decimal places. Expiry, entry-timing, and filing-category sensitivity remain pending in `SUBMISSION_CHECKLIST.md`.

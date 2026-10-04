@@ -1,5 +1,5 @@
 # Input data and outputs
 
-No Massive raw-data files or API cache are bundled. The strategy builds the IV180 panel on demand from Massive using `MASSIVE_API_KEY`; see `skew8k.signal.load_iv` and `k8.inputs.build`. The configured in-sample filing/signal dates are 2022-03-07 through 2024-12-31. The reserved evaluation dates are configured separately, disabled, and not included in the results.
+No Massive raw-data files or API cache are bundled. `skew8k.signal.load_iv` accepts an optional five-column IV180 parquet panel; if absent, it calls `k8.inputs.build` with `MASSIVE_API_KEY`. The full local reproduction used the original in-sample IV panel (71,000 rows, 100 tickers, 2022-03-07 through 2024-12-31), while a separate fresh API-builder test matched call and put IV on an in-sample day to six decimal places. A complete historical API-only rebuild was not repeated.
 
-The `results/` directory contains the saved aggregate in-sample tables used by the note, and `note/figs/` contains the matching figures. These are saved research outputs, not a newly executed clean-kernel run.
+The `results/` directory contains regenerated aggregate in-sample tables. The notebook keeps reserved evaluation execution disabled and supplies no evaluation results.
