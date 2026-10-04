@@ -1,0 +1,7 @@
+year,strategy,event_%,placebo_%,gap_%,n
+2022,protective_put,0.84,-0.75,1.58,41
+2022,stock,1.63,-1.09,2.72,41
+2023,protective_put,0.93,0.48,0.45,45
+2023,stock,1.38,0.97,0.41,45
+2024,protective_put,0.42,0.92,-0.5,47
+2024,stock,0.73,1.21,-0.49,47

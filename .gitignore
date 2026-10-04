@@ -1,0 +1,6 @@
+.env
+.massive_cache/
+data/*.parquet
+results/is_vs_oos_private.md
+__pycache__/
+*.py[cod]
