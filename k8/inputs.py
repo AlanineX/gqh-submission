@@ -35,7 +35,6 @@ def minute_closes(ticker, start, end, adjusted):
     """Last trade before close-5min (decision spot, 15:55 ET) per session, from 5-minute bars: the bar starting at
     close-10min closes at close-5min, equal to the 1-minute bar ending at close-5min. Execution uses the same price
     (the research archive used 15:56; one minute apart)."""
-    workers = max(1, min(int(workers), 6)); processes = max(1, min(int(processes), 6))
     days = sessions(start, end); out = {}
     months = pd.period_range(pd.Timestamp(days[0]), pd.Timestamp(days[-1]), freq="M")
     rows = []
